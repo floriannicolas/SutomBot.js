@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <title>SutomBot.js</title>
+</head>
+
+<body id="body" class="game-helper">
+    <div class="content">
+        <div class="central-content">
+            <header>
+                <img class="logo" src="./images/logo.png" alt="" />
+                <ul>
+                    <li class="menu-item active" data-target="game-helper">Game helper</li>
+                    <li class="menu-item" data-target="test-bot">Test bot</li>
+                    <li class="menu-item" data-target="play">Play yourself</li>
+                    <li class="menu-item" data-target="bot-statistics">Bot statistics</li>
+                </ul>
+            </header>
+            <div id="main" class="hidden-bot-statistics hidden-game-helper">
+                <div class="content-test-bot-form only-test-bot">
+                    <div class="content-selects">
+                        <div class="content-select-version">
+                            <label for="test-bot-version">Bot:</label>
+                            <div class="content-select">
+                                <div class="select">
+                                    <select id="test-bot-version"></select>
+                                    <span class="focus"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content-select-word">
+                            <label for="test-bot-word-type">Word:</label>
+                            <div class="content-select">
+                                <div class="select">
+                                    <select id="test-bot-word-type">
+                                        <option value="auto">Auto</option>
+                                        <option value="custom">Custom</option>
+                                    </select>
+                                    <span class="focus"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="content-test-bot-form-validation" class="content-test-bot-form-validation">
+                        <input type="text" id="run-test-custom-input" class="display-none" value=""
+                            placeholder="Your custom word…" />
+                        <button id="run-test-button">Run bot</button>
+                    </div>
+                    <div id="test-bot-form-loader" class="content-loader"></div>
+                </div>
+                <div class="grille">
+                    <table id="game-table">
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="content-form">
+                    <div class="form hidden-test-bot">
+                        <input type="text" id="answer-input" value="" placeholder="Your answer…" />
+                        <button id="answer-button">Anwser</button>
+                    </div>
+                </div>
+            </div>
+            <div class="content-statistics only-bot-statistics">
+                <div id="statistics-form" class="content-form">
+                    <div class="content-select-version">
+                        <label for="statistics-version">Version:</label>
+                        <div class="content-select">
+                            <div class="select">
+                                <select id="statistics-version"></select>
+                                <span class="focus"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="calculate-statistics-button">Calculate statistics</button>
+                </div>
+                <div id="statistics-content-progress" class="content-progress"></div>
+                <div class="content-table-statistics">
+                    <table id="statistics-table">
+                        <thead>
+                            <tr>
+                                <th>Version</th>
+                                <th>Nb</th>
+                                <th>Won</th>
+                                <th>Lost</th>
+                                <th>Avg attempts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="asterisk">* Statistics are saved in local storage.</div>
+            </div>
+            <div class="content-game-helper only-game-helper">
+                <div class="content-form">
+                    <div class="content-selects">
+                        <div class="content-select-version">
+                            <label for="game-helper-version">Bot:</label>
+                            <div class="content-select">
+                                <div class="select">
+                                    <select id="game-helper-version"></select>
+                                    <span class="focus"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content-select-version">
+                            <label for="game-helper-nb-letters">Nb letters:</label>
+                            <div class="content-select">
+                                <div class="select">
+                                    <select id="game-helper-nb-letters">
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                    </select>
+                                    <span class="focus"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-grids">
+                        <div class="content-inner">
+                            <div class="grille">
+                                <table id="game-table-helper">
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="under-label">* Click on a letter to change its status</div>
+                        </div>
+                    </div>
+
+                    <div class="content-button">
+                        <button id="run-game-helper">Guess word</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="padding-top: 90px"></div>
+        <div id="messenger"></div>
+    </div>
+    <script src="js/data/words.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/manager.js"></script>
+    <script src="js/bot.js"></script>
+    <script src="js/bots/v1.js"></script>
+    <script src="js/bots/v2.js"></script>
+    <script src="js/bots/v3.js"></script>
+    <script src="js/bots/v4.js"></script>
+    <script src="js/index.js"></script>
+</body>
+
+</html>
