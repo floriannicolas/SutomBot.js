@@ -84,18 +84,15 @@ class SutomBot {
         for (let rowIndex = 0; rowIndex < refTable.rows.length; rowIndex++) {
             const row = refTable.rows[rowIndex];
             if (row.cells.length > 0 && row.cells[0].innerText !== "") {
+                currentChars = [];
                 won = true;
                 for (let cellIndex = 0; cellIndex < row.cells.length; cellIndex++) {
                     const cell = row.cells[cellIndex];
                     const cellValue = cell.innerText;
                     const currentChar = (cellIndex === 0 || cell.className === 'bien-place') ? cellValue : null;
-                    if(!currentChars[cellIndex] || currentChar){
-                        currentChars[cellIndex] = currentChar;
-                    }
+                    currentChars.push(currentChar);
                     if (cell.className !== 'bien-place') {
                         won = false;
-                    } else if (cellIndex !== 0) {
-                        this.containedChars = this.containedChars.filter(e => e !== cellValue);
                     }
                     if (cell.className === 'mal-place') {
                         this.missPlacedChars[cellIndex].push(cellValue);

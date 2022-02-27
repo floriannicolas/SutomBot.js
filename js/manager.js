@@ -219,7 +219,7 @@ class SutomManager {
         this.version = version;
         switch (version) {
             case SutomManager.BOT_VERSION.V1:
-                this.bot = new SutomBotV1(this.allWords);
+                this.bot = new SutomBot(this.allWords);
                 break;
             case SutomManager.BOT_VERSION.V2:
                 this.bot = new SutomBotV2(this.allWords);

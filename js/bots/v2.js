@@ -13,6 +13,44 @@ class SutomBotV2 extends SutomBot {
         this.version = SutomManager.BOT_VERSION.V2;
     }
 
+    __updateInfos () {
+        let currentChars = [];
+        let won = true;
+        const refTable = this.__getRefTable();
+        for (let rowIndex = 0; rowIndex < refTable.rows.length; rowIndex++) {
+            const row = refTable.rows[rowIndex];
+            if (row.cells.length > 0 && row.cells[0].innerText !== "") {
+                won = true;
+                for (let cellIndex = 0; cellIndex < row.cells.length; cellIndex++) {
+                    const cell = row.cells[cellIndex];
+                    const cellValue = cell.innerText;
+                    const currentChar = (cellIndex === 0 || cell.className === 'bien-place') ? cellValue : null;
+                    if(!currentChars[cellIndex] || currentChar){
+                        currentChars[cellIndex] = currentChar;
+                    }
+                    if (cell.className !== 'bien-place') {
+                        won = false;
+                    } else if (cellIndex !== 0) {
+                        this.containedChars = this.containedChars.filter(e => e !== cellValue);
+                    }
+                    if (cell.className === 'mal-place') {
+                        this.missPlacedChars[cellIndex].push(cellValue);
+                        this.containedChars.push(cellValue);
+                        this.missPlacedChars[cellIndex] = [...new Set(this.missPlacedChars[cellIndex])];
+                    }
+                    if (cell.className === 'non-trouve' && !this.containedChars.includes(cellValue)) {
+                        this.wrongsChars.push(cellValue);
+                    }
+                }
+            }
+        }
+        this.currentChars = currentChars;
+        this.won = won;
+        this.wrongsChars = [...new Set(this.wrongsChars)];
+        this.containedChars = [...new Set(this.containedChars)];
+        this.__filterWords();
+    }
+
     ___isPossibleWord (word) {
         const wordChars = word.split('');
         let possibleChars = [];
