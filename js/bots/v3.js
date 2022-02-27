@@ -17,6 +17,7 @@ class SutomBotV3 extends SutomBotV2 {
     __getScore (word) {
         let score = 0;
         const wordChars = word.split('');
+        const removedVowels = [];
         for (let charIndex = 0; charIndex < wordChars.length; charIndex++) {
             if (!this.currentChars[charIndex]) {
                 let regex = this.__getScoreRegex(wordChars[charIndex], charIndex);
@@ -24,8 +25,9 @@ class SutomBotV3 extends SutomBotV2 {
                 this.wordScoreRegex[regex] = addedScore;
                 score += addedScore;
             }
-            if (this.attempts === 1 && ['A', 'E', 'I', 'O', 'U', 'Y'].includes(wordChars[charIndex])) {
+            if (this.attempts === 1 && ['A', 'E', 'I', 'O', 'U', 'Y'].includes(wordChars[charIndex]) && !removedVowels.includes(wordChars[charIndex])) {
                 score += 500;
+                removedVowels.push(wordChars[charIndex]);
             }
         }
         let possibleChars = [];
