@@ -138,13 +138,14 @@ class SutomGame {
         }
         const chars = [];
         const wordCharsToCheck = this.__getWordCharsToCheck(guess);
-        //console.log('wordCharsToCheck', wordCharsToCheck);
         for (let i = 0; i < guessChars.length; i++) {
             let className = 'non-trouve';
             if (guessChars[i] === this.wordChars[i]) {
                 className = 'bien-place';
             } else if (wordCharsToCheck.includes(guessChars[i])) {
                 className = 'mal-place';
+                var idx = wordCharsToCheck.findIndex(char => char === guessChars[i]);
+                wordCharsToCheck.splice(idx,1);  
             }
             chars.push({
                 char: guessChars[i],

@@ -99,8 +99,13 @@ class SutomBot {
                         this.containedChars.push(cellValue);
                         this.missPlacedChars[cellIndex] = [...new Set(this.missPlacedChars[cellIndex])];
                     }
-                    if (cell.className === 'non-trouve' && !this.containedChars.includes(cellValue)) {
-                        this.wrongsChars.push(cellValue);
+                    if (cell.className === 'non-trouve') {
+                        if(!this.containedChars.includes(cellValue)) {
+                            this.wrongsChars.push(cellValue);
+                        } else {
+                            this.missPlacedChars[cellIndex].push(cellValue);
+                            this.missPlacedChars[cellIndex] = [...new Set(this.missPlacedChars[cellIndex])];
+                        }
                     }
                 }
             }
@@ -174,8 +179,13 @@ class SutomBot {
                         this.containedChars.push(cellValue);
                         this.missPlacedChars[cellIndex] = [...new Set(this.missPlacedChars[cellIndex])];
                     }
-                    if (cell.className !== 'bien-place' && cell.className !== 'mal-place' && !this.containedChars.includes(cellValue)) {
-                        this.wrongsChars.push(cellValue);
+                    if (cell.className !== 'bien-place' && cell.className !== 'mal-place') {
+                        if(!this.containedChars.includes(cellValue)) {
+                            this.wrongsChars.push(cellValue);
+                        } else {
+                            this.missPlacedChars[cellIndex].push(cellValue);
+                            this.missPlacedChars[cellIndex] = [...new Set(this.missPlacedChars[cellIndex])];
+                        }
                     }
                 }
             }
