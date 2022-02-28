@@ -367,7 +367,7 @@ class SutomManager {
         this.bot.reset();
         this.bot.__init(nbChars);
         this.bot.__updateInfosFromGameHelper();
-        const wordsFiltered = this.bot.allWords;
+        const wordsFiltered = this.bot.filteredWords;
         console.log('wordsFiltered', wordsFiltered);
         const word = this.bot.__guessWord();
         if (!word) {

@@ -161,7 +161,7 @@ class SutomBot {
                 won = true;
                 for (let cellIndex = 0; cellIndex < row.cells.length; cellIndex++) {
                     const cell = row.cells[cellIndex];
-                    const cellValue = (rowIndex === 0 && cellIndex === 0) ? document.getElementById('ghi-0-0').value : cell.innerText;
+                    const cellValue = (rowIndex === 0 && cellIndex === 0) ? document.getElementById('ghi-0-0').value.trim().toUpperCase() : cell.innerText.trim().toUpperCase();
                     const currentChar = (cellIndex === 0 || cell.className === 'bien-place') ? cellValue : null;
                     currentChars.push(currentChar);
                     if (cell.className !== 'bien-place') {
@@ -181,6 +181,7 @@ class SutomBot {
             }
         }
         this.currentChars = currentChars;
+        console.log('this')
         this.won = won;
         this.wrongsChars = [...new Set(this.wrongsChars)];
         this.containedChars = [...new Set(this.containedChars)];
