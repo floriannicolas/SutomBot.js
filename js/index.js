@@ -19,8 +19,7 @@ const newWords = [
     "SOUDAINE",
     "SOUDAINES",
     "SOUDAINS"
-  ];
-
+];
 
 /* manager
 ----------------------------------------------------------------------------------------*/
@@ -43,7 +42,7 @@ const onClickMenuItem = (e) => {
     body.classList.remove('play', 'test-bot', 'bot-statistics', 'game-helper');
     document.getElementById('messenger').innerHTML = '';
     body.classList.add(e.target.dataset.target);
-    switch(e.target.dataset.target){
+    switch (e.target.dataset.target) {
         case 'play':
             manager.resetGame();
             break;

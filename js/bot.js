@@ -80,9 +80,12 @@ class SutomBot {
     __updateInfos () {
         let currentChars = [];
         let won = true;
+        this.containedChars = [];
+        this.wrongsChars = [];
         const refTable = this.__getRefTable();
         for (let rowIndex = 0; rowIndex < refTable.rows.length; rowIndex++) {
             const row = refTable.rows[rowIndex];
+            let rowContainedChars = [];
             if (row.cells.length > 0 && row.cells[0].innerText !== "") {
                 currentChars = [];
                 won = true;
@@ -93,14 +96,17 @@ class SutomBot {
                     currentChars.push(currentChar);
                     if (cell.className !== 'bien-place') {
                         won = false;
+                    } else if (cellIndex !== 0 && this.containedChars.includes(cellValue)) {
+                        const idx = this.containedChars.findIndex(char => char === cellValue);
+                        this.containedChars.splice(idx, 1);
                     }
                     if (cell.className === 'mal-place') {
                         this.missPlacedChars[cellIndex].push(cellValue);
-                        this.containedChars.push(cellValue);
+                        rowContainedChars.push(cellValue);
                         this.missPlacedChars[cellIndex] = [...new Set(this.missPlacedChars[cellIndex])];
                     }
                     if (cell.className === 'non-trouve') {
-                        if(!this.containedChars.includes(cellValue)) {
+                        if (!this.containedChars.includes(cellValue) && !rowContainedChars.includes(cellValue)) {
                             this.wrongsChars.push(cellValue);
                         } else {
                             this.missPlacedChars[cellIndex].push(cellValue);
@@ -108,12 +114,12 @@ class SutomBot {
                         }
                     }
                 }
+                this.containedChars = this.containedChars.concat(rowContainedChars);
             }
         }
         this.currentChars = currentChars;
         this.won = won;
         this.wrongsChars = [...new Set(this.wrongsChars)];
-        this.containedChars = [...new Set(this.containedChars)];
         this.__filterWords();
     }
 
@@ -147,6 +153,7 @@ class SutomBot {
         const nbChars = this.nbChars;
         const newFilteredWords = this.filteredWords.filter(str => str.length === nbChars && str.match(regex));
         this.filteredWords = newFilteredWords;
+        //console.log(`Attempt n°${this.attempts+1} | ${newFilteredWords.length} possibilities | regex -> ${regexString} |`, newFilteredWords, this.wrongsChars, this.containedChars);
     }
 
     __guessWord () {
@@ -161,7 +168,8 @@ class SutomBot {
         const refTable = this.__getRefTableGameHelper();
         for (let rowIndex = 0; rowIndex < refTable.rows.length; rowIndex++) {
             const row = refTable.rows[rowIndex];
-            if (row.cells.length > 0 && (rowIndex === 0  || row.cells[0].innerText !== "")) {
+            if (row.cells.length > 0 && (rowIndex === 0 || row.cells[0].innerText !== "")) {
+                let rowContainedChars = [];
                 currentChars = [];
                 won = true;
                 for (let cellIndex = 0; cellIndex < row.cells.length; cellIndex++) {
@@ -171,16 +179,17 @@ class SutomBot {
                     currentChars.push(currentChar);
                     if (cell.className !== 'bien-place') {
                         won = false;
-                    } else if (cellIndex !== 0) {
-                        this.containedChars = this.containedChars.filter(e => e !== cellValue);
+                    } else if (cellIndex !== 0 && this.containedChars.includes(cellValue)) {
+                        const idx = this.containedChars.findIndex(char => char === cellValue);
+                        this.containedChars.splice(idx, 1);
                     }
                     if (cell.className === 'mal-place') {
                         this.missPlacedChars[cellIndex].push(cellValue);
-                        this.containedChars.push(cellValue);
+                        rowContainedChars.push(cellValue);
                         this.missPlacedChars[cellIndex] = [...new Set(this.missPlacedChars[cellIndex])];
                     }
                     if (cell.className !== 'bien-place' && cell.className !== 'mal-place') {
-                        if(!this.containedChars.includes(cellValue)) {
+                        if (!this.containedChars.includes(cellValue) && !rowContainedChars.includes(cellValue)) {
                             this.wrongsChars.push(cellValue);
                         } else {
                             this.missPlacedChars[cellIndex].push(cellValue);
@@ -188,13 +197,12 @@ class SutomBot {
                         }
                     }
                 }
+                this.containedChars = rowContainedChars;
             }
         }
         this.currentChars = currentChars;
-        console.log('this')
         this.won = won;
         this.wrongsChars = [...new Set(this.wrongsChars)];
-        this.containedChars = [...new Set(this.containedChars)];
         this.__filterWords();
     }
 
@@ -233,21 +241,21 @@ class SutomBot {
 
     __manualfilterAllWords (nbChars, knownWord, wrongsChars = [], missPlacedChars = []) {
         this.currentChars = [];
-        if(knownWord.length < nbChars){
+        if (knownWord.length < nbChars) {
             const knownWordLoop = (nbChars - knownWord.length);
-            for (let i = 0; i < knownWordLoop; i++){
+            for (let i = 0; i < knownWordLoop; i++) {
                 knownWord += '.';
             }
         }
-        if(missPlacedChars.length < nbChars){
+        if (missPlacedChars.length < nbChars) {
             const missPlacedCharsLoop = (nbChars - missPlacedChars.length);
-            for (let i = 0; i < missPlacedCharsLoop; i++){
+            for (let i = 0; i < missPlacedCharsLoop; i++) {
                 missPlacedChars.push([]);
             }
         }
         this.containedChars = [];
         for (const missPlacedCharsForChar of missPlacedChars) {
-            for (const missChar of missPlacedCharsForChar){
+            for (const missChar of missPlacedCharsForChar) {
                 this.containedChars.push(missChar);
             }
         }
@@ -256,12 +264,10 @@ class SutomBot {
         this.wrongsChars = wrongsChars;
         const wordChars = knownWord.split('');
         for (const char of wordChars) {
-            const currentCharValue =  (char !== '.') ? char : null;
+            const currentCharValue = (char !== '.') ? char : null;
             this.currentChars.push(currentCharValue);
         }
         this.wrongsChars = [...new Set(this.wrongsChars)];
-        this.containedChars = [...new Set(this.containedChars)];
-        //console.log('this.containedChars', this.containedChars);
         this.__filterWords();
         return this.filteredWords;
     }

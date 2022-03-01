@@ -160,8 +160,6 @@ class SutomManager {
                 5: { nb: 0, words: [] },
                 6: { nb: 0, words: [] }
             },
-            start: Date.now(),
-            finalized: false,
             average_victory: null
         }
         const versionStats = (this.statistics[version]) ? this.statistics[version] : initialStats;
@@ -243,14 +241,9 @@ class SutomManager {
         const progressPercent = document.getElementById(this.statisticsIds.progressPercentId);
         const percentProgress = Math.round(((stats.wordIndex + 1) / this.statsMaxLength) * 100);
         if (!word || stats.wordIndex >= this.statsMaxLength) {
-            const end = Date.now();
-            const duration = end - stats.start;
-            delete stats.start;
-            stats.duration = duration;
-            stats.finalized = true;
+            // stop statistics            
             const totalAttempts = stats.victories[1].nb + (stats.victories[2].nb * 2) + (stats.victories[3].nb * 3) + (stats.victories[4].nb * 4) + (stats.victories[5].nb * 5) + (stats.victories[1].nb * 6);
             stats.average_victory = totalAttempts / stats.won;
-            // stop statistics
             this.statistics[stats.version] = stats;
             this.saveStats();
             this.loadStatisticsTables();
@@ -267,7 +260,7 @@ class SutomManager {
                 if (status === 'won') {
                     stats.won++;
                     stats.victories[attempts].nb++;
-                    if ([5, 6].includes(attempts)) {
+                    if ([5, 6].includes(attempts) && stats.version === SutomManager.BOT_VERSION.LAST) {
                         stats.victories[attempts].words.push(word);
                     }
                 } else {
@@ -321,7 +314,8 @@ class SutomManager {
             tBody.deleteRow(i - 1);
         }
         let rowIndex = 0;
-        for (const [version, stats] of Object.entries(this.statistics)) {
+        for (const [version, theStats] of Object.entries(baseStatistics)) {
+            const stats = this.statistics[version] || theStats;
             const newLine = tBody.insertRow(rowIndex);
             const lineStats = [];
             lineStats.push(version);
@@ -332,6 +326,11 @@ class SutomManager {
             for (let cellIndex = 0; cellIndex < lineStats.length; cellIndex++) {
                 const newCell = newLine.insertCell(cellIndex);
                 const text = document.createTextNode(lineStats[cellIndex]);
+                if(cellIndex  === 3) {
+                    newCell.setAttribute('title', stats.lost_words.join(', '));
+                } else if(cellIndex === 4) {
+                    newCell.setAttribute('title', stats.average_victory);
+                }
                 newCell.appendChild(text);
             }
         }

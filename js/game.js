@@ -20,7 +20,7 @@ class SutomGame {
         SUCCESS: 'success'
     };
 
-    reset(customWord = null, withMessage = true) {
+    reset (customWord = null, withMessage = true) {
         this.__pickAWord(customWord);
         this.attempts = [];
         this.won = false;
@@ -43,31 +43,31 @@ class SutomGame {
         this.__clearTable();
     }
 
-    __clearMessages() {
+    __clearMessages () {
         document.getElementById(this.messengerId).innerHTML = '';
     }
 
-    __displayMessage(answer) {
-        if(answer.status === SutomGame.ANSWER_STATUS.PLAYING){
+    __displayMessage (answer) {
+        if (answer.status === SutomGame.ANSWER_STATUS.PLAYING) {
             document.getElementById(this.messengerId).innerHTML = '';
             document.getElementById(this.answerInputId).value = this.wordChars[0];
             return false;
         }
-        if(!this.withMessage && answer.status === 'success'){
+        if (!this.withMessage && answer.status === 'success') {
             return false;
         }
         const span = document.createElement("span");
         span.className = answer.status;
         span.innerText = answer.message;
         document.getElementById(this.messengerId).innerHTML = span.outerHTML;
-        if(answer.status === SutomGame.ANSWER_STATUS.SUCCESS){
-            document.getElementById(this.answerInputId).value = '';   
+        if (answer.status === SutomGame.ANSWER_STATUS.SUCCESS) {
+            document.getElementById(this.answerInputId).value = '';
         }
         return false;
     }
 
     onAnswerClick () {
-        if(this.attempts.length >= this.maxAttempts || this.won){
+        if (this.attempts.length >= this.maxAttempts || this.won) {
             return false;
         }
         const guess = document.getElementById(this.answerInputId).value;
@@ -78,8 +78,8 @@ class SutomGame {
 
     __clearTable () {
         const refTable = this.__getRefTable();
-        for(let i = refTable.rows.length; i > 0;i--) {
-            refTable.deleteRow(i-1);
+        for (let i = refTable.rows.length; i > 0; i--) {
+            refTable.deleteRow(i - 1);
         }
     }
 
@@ -104,10 +104,10 @@ class SutomGame {
         }
     }
 
-    __getWordCharsToCheck(guess) {
+    __getWordCharsToCheck (guess) {
         const guessChars = guess.split('');
         let wordCharsToCheck = [];
-        for(let charIndex = 0; charIndex < guessChars.length; charIndex++) {
+        for (let charIndex = 0; charIndex < guessChars.length; charIndex++) {
             if (guessChars[charIndex] !== this.wordChars[charIndex]) {
                 wordCharsToCheck.push(this.wordChars[charIndex]);
             }
@@ -144,8 +144,8 @@ class SutomGame {
                 className = 'bien-place';
             } else if (wordCharsToCheck.includes(guessChars[i])) {
                 className = 'mal-place';
-                var idx = wordCharsToCheck.findIndex(char => char === guessChars[i]);
-                wordCharsToCheck.splice(idx,1);  
+                const idx = wordCharsToCheck.findIndex(char => char === guessChars[i]);
+                wordCharsToCheck.splice(idx, 1);
             }
             chars.push({
                 char: guessChars[i],
@@ -165,7 +165,7 @@ class SutomGame {
             }
         }
 
-        if(this.attempts.length >= this.maxAttempts){
+        if (this.attempts.length >= this.maxAttempts) {
             return {
                 status: SutomGame.ANSWER_STATUS.ERROR,
                 message: `You lost! Word was "${this.word}"`,
@@ -176,7 +176,7 @@ class SutomGame {
         }
     }
 
-    __getRefTable(){
+    __getRefTable () {
         return document.getElementById(this.tableId);
     }
 
@@ -202,8 +202,8 @@ class SutomGame {
         return ret;
     }
 
-    __pickAWord(customWord = null) {
-        const word = (customWord) ? customWord : this.allWords[Math.floor(Math.random()*this.allWords.length)];
+    __pickAWord (customWord = null) {
+        const word = (customWord) ? customWord : this.allWords[Math.floor(Math.random() * this.allWords.length)];
         this.word = word.trim().toUpperCase();
         this.wordChars = this.word.split('');
     }
