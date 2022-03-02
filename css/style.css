@@ -633,6 +633,7 @@ select::-ms-expand {
     background-color: transparent;
     text-align: center;
     font-size: 22px;
+    padding: 0;
 }
 
 /* End of file

@@ -13,53 +13,6 @@ class SutomBotV2 extends SutomBot {
         this.version = SutomManager.BOT_VERSION.V2;
     }
 
-    __updateInfos () {
-        let currentChars = [];
-        this.containedChars = [];
-        this.wrongsChars = [];
-        let won = true;
-        const refTable = this.__getRefTable();
-        for (let rowIndex = 0; rowIndex < refTable.rows.length; rowIndex++) {
-            const row = refTable.rows[rowIndex];
-            if (row.cells.length > 0 && row.cells[0].innerText !== "") {
-                let rowContainedChars = [];
-                won = true;
-                for (let cellIndex = 0; cellIndex < row.cells.length; cellIndex++) {
-                    const cell = row.cells[cellIndex];
-                    const cellValue = cell.innerText;
-                    const currentChar = (cellIndex === 0 || cell.className === 'bien-place') ? cellValue : null;
-                    if (!currentChars[cellIndex] || currentChar) {
-                        currentChars[cellIndex] = currentChar;
-                    }
-                    if (cell.className !== 'bien-place') {
-                        won = false;
-                    } else if (cellIndex !== 0 && this.containedChars.includes(cellValue)) {
-                        const idx = this.containedChars.findIndex(char => char === cellValue);
-                        this.containedChars.splice(idx, 1);
-                    }
-                    if (cell.className === 'mal-place') {
-                        this.missPlacedChars[cellIndex].push(cellValue);
-                        rowContainedChars.push(cellValue);
-                        this.missPlacedChars[cellIndex] = [...new Set(this.missPlacedChars[cellIndex])];
-                    }
-                    if (cell.className === 'non-trouve') {
-                        if (!this.containedChars.includes(cellValue) && !rowContainedChars.includes(cellValue)) {
-                            this.wrongsChars.push(cellValue);
-                        } else {
-                            this.missPlacedChars[cellIndex].push(cellValue);
-                            this.missPlacedChars[cellIndex] = [...new Set(this.missPlacedChars[cellIndex])];
-                        }
-                    }
-                }
-                this.containedChars = rowContainedChars;
-            }
-        }
-        this.currentChars = currentChars;
-        this.won = won;
-        this.wrongsChars = [...new Set(this.wrongsChars)];
-        this.__filterWords();
-    }
-
     ___isPossibleWord (word) {
         const wordChars = word.split('');
         let possibleChars = [];
@@ -79,8 +32,7 @@ class SutomBotV2 extends SutomBot {
         const nbChars = this.nbChars;
         const newFilteredWords = this.filteredWords.filter(str => str.length === nbChars && str.match(regex) && this.___isPossibleWord(str));
         this.filteredWords = newFilteredWords;
-        //console.log(`Attempt n°${this.attempts+1} | ${newFilteredWords.length} possibilities | regex -> ${regexString} |`, newFilteredWords, this.wrongsChars, this.containedChars);
-        //console.log('----------------');
+        //console.log(`__filterWords.Attempt n°${this.attempts} | ${newFilteredWords.length} possibilities | regex -> ${regexString} |`, newFilteredWords, this.wrongsChars, this.containedChars, this.containedCharsLimitation);
     }
 
     __getScoreRegex (char, index) {

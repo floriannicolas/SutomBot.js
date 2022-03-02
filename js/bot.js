@@ -14,6 +14,7 @@ class SutomBot {
         this.currentChars = [];
         this.wrongsChars = [];
         this.containedChars = [];
+        this.containedCharsLimitation = {};
         this.missPlacedChars = [];
         this.won = false;
         this.playTimeout = 10;
@@ -28,6 +29,7 @@ class SutomBot {
         this.currentChars = [];
         this.wrongsChars = [];
         this.containedChars = [];
+        this.containedCharsLimitation = {};
         this.missPlacedChars = [];
         this.won = false;
         this.endEvent = endEvent;
@@ -79,26 +81,34 @@ class SutomBot {
 
     __updateInfos () {
         let currentChars = [];
-        let won = true;
         this.containedChars = [];
+        this.containedCharsLimitation = {};
         this.wrongsChars = [];
+        let won = true;
         const refTable = this.__getRefTable();
         for (let rowIndex = 0; rowIndex < refTable.rows.length; rowIndex++) {
             const row = refTable.rows[rowIndex];
-            let rowContainedChars = [];
             if (row.cells.length > 0 && row.cells[0].innerText !== "") {
-                currentChars = [];
+                let rowContainedChars = [];
                 won = true;
                 for (let cellIndex = 0; cellIndex < row.cells.length; cellIndex++) {
                     const cell = row.cells[cellIndex];
                     const cellValue = cell.innerText;
                     const currentChar = (cellIndex === 0 || cell.className === 'bien-place') ? cellValue : null;
-                    currentChars.push(currentChar);
+                    if (!currentChars[cellIndex] || currentChar) {
+                        currentChars[cellIndex] = currentChar;
+                    }
                     if (cell.className !== 'bien-place') {
                         won = false;
                     } else if (cellIndex !== 0 && this.containedChars.includes(cellValue)) {
                         const idx = this.containedChars.findIndex(char => char === cellValue);
                         this.containedChars.splice(idx, 1);
+                        if(this.containedCharsLimitation[cellValue]){
+                            this.containedCharsLimitation[cellValue]--;
+                        }
+                        if(this.containedCharsLimitation[cellValue] <= 0){
+                            delete this.containedCharsLimitation[cellValue];
+                        }
                     }
                     if (cell.className === 'mal-place') {
                         this.missPlacedChars[cellIndex].push(cellValue);
@@ -109,12 +119,13 @@ class SutomBot {
                         if (!this.containedChars.includes(cellValue) && !rowContainedChars.includes(cellValue)) {
                             this.wrongsChars.push(cellValue);
                         } else {
+                            this.containedCharsLimitation[cellValue] = rowContainedChars.filter(char => char === cellValue).length;
                             this.missPlacedChars[cellIndex].push(cellValue);
                             this.missPlacedChars[cellIndex] = [...new Set(this.missPlacedChars[cellIndex])];
                         }
                     }
                 }
-                this.containedChars = this.containedChars.concat(rowContainedChars);
+                this.containedChars = rowContainedChars;
             }
         }
         this.currentChars = currentChars;
@@ -165,6 +176,8 @@ class SutomBot {
         let won = true;
         this.containedChars = [];
         this.wrongsChars = [];
+        this.containedCharsLimitation = {};
+        this.attempts = 0;
         const refTable = this.__getRefTableGameHelper();
         for (let rowIndex = 0; rowIndex < refTable.rows.length; rowIndex++) {
             const row = refTable.rows[rowIndex];
@@ -172,16 +185,28 @@ class SutomBot {
                 let rowContainedChars = [];
                 currentChars = [];
                 won = true;
+                this.attempts++;
                 for (let cellIndex = 0; cellIndex < row.cells.length; cellIndex++) {
                     const cell = row.cells[cellIndex];
-                    const cellValue = (rowIndex === 0 && cellIndex === 0) ? document.getElementById('ghi-0-0').value.trim().toUpperCase() : cell.innerText.trim().toUpperCase();
+                    let cellValue = (rowIndex === 0 && cellIndex === 0) ? document.getElementById('ghi-0-0').value.trim().toUpperCase() : cell.innerText.trim().toUpperCase();
+                    if(cellValue === '.'){
+                        cellValue = null;
+                    }
                     const currentChar = (cellIndex === 0 || cell.className === 'bien-place') ? cellValue : null;
-                    currentChars.push(currentChar);
+                    if (!currentChars[cellIndex] || currentChar) {
+                        currentChars[cellIndex] = currentChar;
+                    }
                     if (cell.className !== 'bien-place') {
                         won = false;
                     } else if (cellIndex !== 0 && this.containedChars.includes(cellValue)) {
                         const idx = this.containedChars.findIndex(char => char === cellValue);
                         this.containedChars.splice(idx, 1);
+                        if(this.containedCharsLimitation[cellValue]){
+                            this.containedCharsLimitation[cellValue]--;
+                        }
+                        if(this.containedCharsLimitation[cellValue] <= 0){
+                            delete this.containedCharsLimitation[cellValue];
+                        }
                     }
                     if (cell.className === 'mal-place') {
                         this.missPlacedChars[cellIndex].push(cellValue);
@@ -190,8 +215,11 @@ class SutomBot {
                     }
                     if (cell.className !== 'bien-place' && cell.className !== 'mal-place') {
                         if (!this.containedChars.includes(cellValue) && !rowContainedChars.includes(cellValue)) {
-                            this.wrongsChars.push(cellValue);
+                            if(cellValue !== '.'){
+                                this.wrongsChars.push(cellValue);
+                            }
                         } else {
+                            this.containedCharsLimitation[cellValue] = rowContainedChars.filter(char => char === cellValue).length;
                             this.missPlacedChars[cellIndex].push(cellValue);
                             this.missPlacedChars[cellIndex] = [...new Set(this.missPlacedChars[cellIndex])];
                         }
@@ -210,7 +238,8 @@ class SutomBot {
     __play () {
         this.attempts++;
         const word = this.__guessWord();
-        //console.log(`Attempt n°${this.attempts} | ${word} | ${this.filteredWords.length} possibilities |`, this.filteredWords);
+        //console.log(`Play.Attempt n°${this.attempts} | ${word} | ${this.filteredWords.length} possibilities |`, this.filteredWords);
+        //console.log('----------------');
         document.getElementById(this.answerInputId).value = word;
         document.getElementById(this.answerButtonId).click();
         setTimeout(() => {

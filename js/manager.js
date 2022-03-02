@@ -48,8 +48,8 @@ class SutomManager {
         V1: 'V1',
         V2: 'V2',
         V3: 'V3',
-        //V4: 'V4',
-        LAST: 'V3'
+        V4: 'V4',
+        LAST: 'V4'
     }
 
     init () {
@@ -369,6 +369,7 @@ class SutomManager {
         const wordsFiltered = this.bot.filteredWords;
         console.log('wordsFiltered', wordsFiltered);
         const word = this.bot.__guessWord();
+        //console.log('----------------');
         if (!word) {
             this.game.__displayMessage({
                 status: 'error',
