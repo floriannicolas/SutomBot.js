@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <img src="https://raw.githubusercontent.com/ticlekiwi/SutomBot.js/main/images/logo-round.png" alt="SutomBot.js" width="180">
+  <img src="https://raw.githubusercontent.com/floriannicolas/SutomBot.js/main/images/logo-round.png" alt="SutomBot.js" width="180">
   <br>
 </h1>
 
@@ -11,14 +11,14 @@ Modeste solveur pour résoudre les défis journaliers de la plateforme https://s
 </h4>
 
 <p align="center">
-  <a href="https://ticlekiwi.github.io/SutomBot.js/" target="_blank">DÉMO</a> •
+  <a href="https://floriannicolas.github.io/SutomBot.js/" target="_blank">DÉMO</a> •
   <a href="#fonctionnalités">Fonctionnalités</a> •
   <a href="#différents-bots">Différents bots</a> •
   <a href="#crédits">Crédits</a> •
   <a href="#licence">Licence</a>
 </p>
 
-![screenshot](https://raw.githubusercontent.com/ticlekiwi/SutomBot.js/main/images/captures/game-helper.gif)
+![screenshot](https://raw.githubusercontent.com/floriannicolas/SutomBot.js/main/images/captures/game-helper.gif)
 ## Fonctionnalités
 
 * "Game helper" permet de résoudre le défi journalier dde la plateforme https://sutom.nocle.fr/
@@ -30,7 +30,7 @@ Modeste solveur pour résoudre les défis journaliers de la plateforme https://s
 
 ## Différents bots
 
-![screenshot](https://raw.githubusercontent.com/ticlekiwi/SutomBot.js/main/images/captures/statistics.png)
+![screenshot](https://raw.githubusercontent.com/floriannicolas/SutomBot.js/main/images/captures/statistics.png)
 
 
 | Version | Description |
